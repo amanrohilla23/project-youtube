@@ -21,3 +21,4 @@ class API extends Error{
         
     }
 }
+export {API}
