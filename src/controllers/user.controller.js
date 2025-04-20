@@ -20,7 +20,7 @@ const registerUser= asyncHandler( async (req,res)=>{
         throw new API(400,"all fields are required");
    }
 
-   const existeduser=user.findOne({
+   const existeduser= await user.findOne({
     $or:[ { username },{ email } ]
 
    })
@@ -29,7 +29,7 @@ const registerUser= asyncHandler( async (req,res)=>{
    }
 
    const avatarlocalpath=req.files?.avatar[0]?.path;
-   const coverimagelocalpath=req.files?.avatar[0]?.path;
+   const coverimagelocalpath=req.files?.coverimage[0]?.path;
    if(!avatarlocalpath) {
     throw new API(400,"avatar file is required")  
    }
@@ -40,7 +40,7 @@ const registerUser= asyncHandler( async (req,res)=>{
         throw new API(400,"Avatar is required ")
         
     }
-   const user=await user.create({
+   const newUser=await user.create({
         fullname,
         avatar:avatar.url,
         coverimage:coverimage?.url || "",
@@ -49,7 +49,7 @@ const registerUser= asyncHandler( async (req,res)=>{
         username:username.toLowerCase()
     })
     
-    const createduser = await user.findById(user._id).select(
+    const createduser = await user.findById(newUser._id).select(
         "-password -refreshToken"
     )
     if(!createduser){
