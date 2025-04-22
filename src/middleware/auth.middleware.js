@@ -7,17 +7,17 @@ export const verifyJWT= asyncHandler(async(req,res,next)=>{
     try {
         const token=req.cookies?.accessToken|| req.header("Authorization")?.replace("Bearer ","")
         if(!token){
-            throw API(401,"No token provided")
+            throw new API(401,"No token provided")
         }
         const decodedToken=jwt.verify(token,process.env.ACCESS_TOKEN_SECRET)
         const newuser=await user.findById(decodedToken?._id).select("-password -refreshToken")
-        if(!user){
-            throw API(401,"invalid Access Token")
+        if(!newuser){
+            throw new API(401,"invalid Access Token")
         }
-        req.USEr=newuser;
+        req.user=newuser;
         next()
     } catch (error) {
-        throw API(401,error?.message || "invalid access token")
+        throw new API(401,error?.message || "invalid access token")
         
     }
 
