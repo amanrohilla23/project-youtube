@@ -363,7 +363,8 @@ export {
     getCurrentUser,
     updateDetails,
     updateUserAvatar,
-    updateUserCoverimage
+    updateUserCoverimage,
+    getUserChannelProfile
 
 
 }
