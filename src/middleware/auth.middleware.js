@@ -14,7 +14,7 @@ export const verifyJWT= asyncHandler(async(req,res,next)=>{
         if(!newuser){
             throw new API(401,"invalid Access Token")
         }
-        req.user=newuser;
+        req.newuser=newuser;
         next()
     } catch (error) {
         throw new API(401,error?.message || "invalid access token")
