@@ -134,8 +134,8 @@ const logoutUser=asyncHandler(async(req,res)=>{
     await user.findByIdAndUpdate(
         req.user._id,
         {
-            $set:{
-                refreshToken:undefined
+            $unset:{
+                refreshToken:1
             }
         },
 
@@ -202,7 +202,10 @@ const refreshAccesstoken=asyncHandler(async(req,res)=>{
 const changeCurrenPassword=asyncHandler(async (req,res)=>{
     const{oldPassword,newPassword}=req.body
 
-   const gotuser=await user.findById(req.newuser?._id)
+   const gotuser=await user.findById(req.user?._id)
+   if (!gotuser) {
+    throw new API(400, "User not found");
+}
    const isPasswordCorrect=await gotuser.isPasswordCorrect(oldPassword)
    if(!isPasswordCorrect){
     throw new API(400,"wrong old password")
@@ -390,7 +393,7 @@ const getWatchHistory= asyncHandler( async(req,res)=>{
                     {
                         $addFields:{
                             owner:{
-                                $first:"owner"
+                                $first:"$owner"
                             }
                         }
                     }
