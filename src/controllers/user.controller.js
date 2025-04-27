@@ -293,6 +293,7 @@ const getUserChannelProfile=asyncHandler(async(req,res)=>{
     if(!username?.trim()){
         throw new API(400,"username is missing ")
     }
+    
     const channel=await user.aggregate([
         {
             $match:{
@@ -319,15 +320,15 @@ const getUserChannelProfile=asyncHandler(async(req,res)=>{
         {
             $addFields:{
                 subscriberCount:{
-                    $size:"$subscribers",
+                    $size: { $ifNull: ["$subscribers", []] },
 
                 },
                 channelSubscribedTocount:{
-                    $size:"subscribedTo"
+                    $size:{ $ifNull: ["$subscribedTo", []] }
                 },
                 isSubscribed:{
                     $cond:{
-                        if:{$in:[req.user?._id,"subscribers.subscriber"]},
+                        if:{$in:[req.user?._id,"$subscribers.subscriber"]},
                         then:true,
                         else:false
                     }
